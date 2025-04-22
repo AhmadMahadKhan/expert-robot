@@ -62,7 +62,7 @@ public class EmergencyAlert {
                     }
                 }
                 String subject = "Emergency Alert for Patient ID: " + vitalSign.getPatientId();
-                //System.out.println("EMERGENCY ALERT for Patient ID: " + vitalSign.getPatientId());
+
                 String text = "The patient with ID: " + vitalSign.getPatientId() + " has a critical condition. Please send medical care immediately.";
                 NotificationService service = new NotificationService();
                 service.sendEmergencyAlerts(email, subject, text);
@@ -70,10 +70,5 @@ public class EmergencyAlert {
         }
     }
 
-//    //getter method
-//    public boolean getCriticalCondition(){
-//
-//        return criticalCondition;
-//    }
 
 }

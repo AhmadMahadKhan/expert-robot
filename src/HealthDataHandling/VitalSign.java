@@ -1,6 +1,6 @@
 package HealthDataHandling;
 
-import UserManagment.Patient;
+
 
 public class VitalSign {
 
@@ -44,22 +44,6 @@ public class VitalSign {
             throw new IllegalArgumentException("Heart rate must be between 40 and 140 bpm.");
         }
     }
-
-//    public void setBloodPressure(String bloodPressure) {
-//        if (bloodPressure != null && bloodPressure.matches("\\d{2,3}/\\d{2,3}")) {
-//            this.bloodPressure = bloodPressure;
-//        } else {
-//            throw new IllegalArgumentException("Blood pressure must be in format '###/###'.");
-//        }
-//    }
-//public void setBloodPressure(String bloodPressure) {
-//    // Allow both 2 or 3 digits before and after the slash (e.g., 120/80, 120/080)
-//    if (bloodPressure != null && bloodPressure.matches("\\d{2,3}/\\d{2,3}")) {
-//        this.bloodPressure = bloodPressure;
-//    } else {
-//        throw new IllegalArgumentException("Blood pressure must be in format '###/###' or '##/##'.");
-//    }
-//}
 
     public void setBloodPressure(int systolic, int diastolic) {
         // Simple validation for systolic and diastolic ranges
