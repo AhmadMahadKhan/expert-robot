@@ -40,6 +40,7 @@ public class PanicButton {
         String message = "⚠️ The patient has manually triggered an emergency. Please respond immediately.";
 
         NotificationService service = new NotificationService();
+        System.out.println("sending mails...");
         service.sendEmergencyAlerts(doctorEmails, subject, message);
     }
 }

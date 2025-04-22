@@ -3,12 +3,14 @@ package RoleMenus;
 import AppointmentScheduling.AppointmentManager;
 import DoctorPatientInteraction.MedicalHistory;
 import EmergencyAlert.EmergencyAlert;
+import EmergencyAlert.PanicButton;
 import HealthDataHandling.VitalSign;
 import HealthDataHandling.VitalsDatabase;
 import UserManagment.Administrator;
 import UserManagment.Doctor;
 import UserManagment.Patient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -108,19 +110,22 @@ public class MenuHandler {
             System.out.println("6. Send Chat Message");
             System.out.println("7. View My Chats");
             System.out.println("8. Send Video Call Link");
-            System.out.println("9. Logout");
+            System.out.println("9. View My Vital Data");
+            System.out.println("10. Send Panic Button Alert");
+            System.out.println("11. Logout");
             System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine();
 
+            List<String> doctorEmails = null;
             switch (choice) {
                 case "1":
                     patient.uploadVitals(vitalsDatabase);
                     System.out.println("testing vitals");
 
                     List<VitalSign> vitals = vitalsDatabase.getVitalDatabase();
-                    VitalSign vital ;
-                    for(VitalSign vitalSign : vitals){
+                    VitalSign vital;
+                    for (VitalSign vitalSign : vitals) {
                         vital = vitalSign.getPatientId().equals(patient.getId()) ? vitalSign : null;
                     }
                     EmergencyAlert.alert(vitals, appointmentManager, admin);
@@ -168,10 +173,36 @@ public class MenuHandler {
                     patient.sendVideoLink(email, url, admin);
                     break;
 
-                    case "9":
-                        System.out.println("View My Vital Data");
-                        patient.viewMyVitalData(vitalsDatabase);
+                case "9":
+                    System.out.println("View My Vital Data");
+                    patient.viewMyVitalData(vitalsDatabase);
                 case "10":
+                    doctorEmails = new ArrayList<>();
+
+                    // Try to get doctors associated with the patient's appointments
+                    List<String> docIds = appointmentManager.getDoctorIdsByPatientId(patient.getId());
+                    for (String docId : docIds) {
+                        for (Doctor doctor : admin.getDoctors()) {
+                            if (doctor.getId().equals(docId)) {
+                                doctorEmails.add(doctor.getEmail());
+                            }
+                        }
+                    }
+
+                    // Fallback: if no appointment doctors found, notify all doctors
+                    if (doctorEmails.isEmpty()) {
+                        System.out.println("No appointment doctors found. Sending alert to all available doctors...");
+                        for (Doctor doc : admin.getDoctors()) {
+                            doctorEmails.add(doc.getEmail());
+                        }
+                    }
+
+                    PanicButton panicButton = new PanicButton(patient.getId(), doctorEmails);
+                    panicButton.press();
+                    break;
+
+
+                case "11":
                     System.out.println("Logging out...");
                     return;
 
@@ -258,3 +289,6 @@ public class MenuHandler {
         }
     }
 }
+
+
+

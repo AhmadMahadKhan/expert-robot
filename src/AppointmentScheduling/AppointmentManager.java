@@ -53,4 +53,13 @@ public class AppointmentManager {
     }
 
 
+    public List<String> getDoctorIdsByPatientId(String id) {
+        List<String> doctorIds = new ArrayList<>();
+        for (Appointment a : appointments) {
+            if (a.getPatientId().equals(id)) {
+                doctorIds.add(a.getDoctorId());
+            }
+        }
+        return doctorIds;
+    }
 }
