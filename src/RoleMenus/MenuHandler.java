@@ -176,7 +176,9 @@ public class MenuHandler {
                 case "9":
                     System.out.println("View My Vital Data");
                     patient.viewMyVitalData(vitalsDatabase);
+                    break;
                 case "10":
+                    System.out.println("Sending panic button alert...");
                     doctorEmails = new ArrayList<>();
 
                     // Try to get doctors associated with the patient's appointments

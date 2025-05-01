@@ -8,10 +8,12 @@ import java.util.Properties;
 
 public class EmailSender {
 
+    //a static method to send email
     public static void sendEmail(String to, String subject, String messageText) {
-        final String fromEmail = "";  // Your Gmail
-        final String password = "";       // Gmail App Password
+        final String fromEmail = "niazimahad05@gmail.com";  // Your Gmail
+        final String password = "tdtk hhsz ivfg mokk";       // Gmail App Password
 
+        // Create properties
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");

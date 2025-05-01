@@ -11,6 +11,7 @@ import DoctorPatientInteraction.Prescription;
 import EmergencyAlert.EmergencyAlert;
 import HealthDataHandling.VitalSign;
 import HealthDataHandling.VitalsDatabase;
+import NotificationReminder.EmailSender;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -112,31 +113,90 @@ public class Patient extends User implements ChatClient {
         }
         }
     }
-    public void requestAppointment(Administrator doctors, AppointmentManager appointments){
-
-        //displaying all the doctors to the user
-        for(Doctor doctor : doctors.getDoctors()){
-            System.out.println("Doctor name : "+doctor.getName());
-            System.out.println("Doctor Id: "+doctor.getId());
+    public void requestAppointment(Administrator doctors, AppointmentManager appointments) {
+        // Display all doctors
+        for (Doctor doctor : doctors.getDoctors()) {
+            System.out.println("Doctor Name: " + doctor.getName());
+            System.out.println("Doctor ID: " + doctor.getId());
         }
 
-        System.out.println("Enter doctor Id: ");
-        String id = scanner.nextLine();
+        System.out.print("Enter Doctor ID: ");
+        String selectedDoctorId = scanner.nextLine();
+
+        // Find the selected doctor and get email
+        String doctorEmail = null;
+        for (Doctor doctor : doctors.getDoctors()) {
+            if (doctor.getId().equals(selectedDoctorId)) {
+                doctorEmail = doctor.getEmail();
+                break;
+            }
+        }
+
+        if (doctorEmail == null) {
+            System.out.println("Invalid Doctor ID. Appointment not created.");
+            return;
+        }
+
+        // Get appointment date and time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         System.out.print("Enter date and time (yyyy-MM-dd HH:mm): ");
         String input = scanner.nextLine();
-        LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
 
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
 
-        Appointment appointment = new Appointment(this.getId(),id ,dateTime);
-        appointments.addAppointment(appointment);
+            // Create appointment
+            Appointment appointment = new Appointment(this.getId(), selectedDoctorId, dateTime);
+            appointments.addAppointment(appointment);
 
+            // Email notifications
+            EmailSender.sendEmail(this.getEmail(), "Appointment Request",
+                    "Your appointment request has been sent to the doctor.");
+            System.out.println("Mail send to the user..");
+            EmailSender.sendEmail(doctorEmail, "New Appointment",
+                    "You have a new appointment request from patient ID: " + this.getId());
+            System.out.println("Mail send to the doctor..");
 
-
-
-
-
+            System.out.println("Appointment request sent and emails delivered.");
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please use yyyy-MM-dd HH:mm");
+        }
     }
+
+    //
+//    public void requestAppointment(Administrator doctors, AppointmentManager appointments){
+//
+//        String doctorMail ="";
+//        //displaying all the doctors to the user
+//        for(Doctor doctor : doctors.getDoctors()){
+//            System.out.println("Doctor name : "+doctor.getName());
+//            System.out.println("Doctor Id: "+doctor.getId());
+//            doctorMail = doctor.getEmail();
+//        }
+//
+//        System.out.println("Enter doctor Id: ");
+//        String id = scanner.nextLine();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        System.out.print("Enter date and time (yyyy-MM-dd HH:mm): ");
+//        String input = scanner.nextLine();
+//        LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
+//
+//
+//        Appointment appointment = new Appointment(this.getId(),id ,dateTime);
+//        appointments.addAppointment(appointment);
+//        EmailSender.sendEmail(this.getEmail(),"Appointment Request", "Your appointment request has been sent to the doctor. Please check your email for confirmation.");
+//        System.out.println("Mail send to the user..");
+//
+//        EmailSender.sendEmail(doctorMail,"New Appointment","Confirm the appointent");
+//
+//
+//
+//
+//
+//
+//
+//    }
+//
     public void getAppointments(AppointmentManager appointments){
         for(Appointment appointment : appointments.getAppointmentsByPatient(this.getId())){
             System.out.println(appointment.detail());

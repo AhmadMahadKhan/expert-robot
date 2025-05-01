@@ -63,6 +63,9 @@ public class Administrator extends User{
         patients.add(patient);
         System.out.println("patient added");
     }
+
+
+
     public void addDoctor(String name ,String id,String email){
         for(Doctor doctor : doctors){
             if(doctor.getId().equals(id)){

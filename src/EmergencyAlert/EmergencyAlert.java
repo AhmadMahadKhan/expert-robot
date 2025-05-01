@@ -29,7 +29,10 @@ public class EmergencyAlert {
             double temp = vitalSign.getTemp();
             int systolic = Integer.parseInt(bp.split("/")[0]);
             int diastolic = Integer.parseInt(bp.split("/")[1]);
-
+            if(oxygen==0 || hr==0 || systolic==0 || diastolic==0 || temp==0) {
+                System.out.println("no vital data entered");
+                return;
+            }
             if (oxygen < 90 || oxygen >=100 ||
                     hr < 60 || hr >= 100 ||
                     systolic < 90 || systolic >= 120 ||
